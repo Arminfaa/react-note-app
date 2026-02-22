@@ -170,25 +170,27 @@ function NoteItem({ note, formatDate, categories }) {
               <span className="note-item__tag">{note.category}</span>
             )}
           </div>
-          <div className="actions">
-            <button
-              type="button"
-              className="btn-delete"
-              onClick={openDeleteConfirm}
-              aria-label="حذف"
-              title="حذف"
-            >
-              <FiTrash2 size={18} />
-            </button>
-            <button
-              type="button"
-              className="btn-edit"
-              onClick={() => setIsEditing(true)}
-              aria-label="ویرایش"
-              title="ویرایش"
-            >
-              <FiEdit2 size={18} />
-            </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <div className="actions">
+              <button
+                type="button"
+                className="btn-delete"
+                onClick={openDeleteConfirm}
+                aria-label="حذف"
+                title="حذف"
+              >
+                <FiTrash2 size={18} />
+              </button>
+              <button
+                type="button"
+                className="btn-edit"
+                onClick={() => setIsEditing(true)}
+                aria-label="ویرایش"
+                title="ویرایش"
+              >
+                <FiEdit2 size={18} />
+              </button>
+            </div>
             <input
               type="checkbox"
               name={note.id}
