@@ -1,30 +1,54 @@
 import { useNotes } from "../context/NotesContext";
 import Message from "./Message";
 
-function NoteStatus() {
-  const notes= useNotes()
-  // dervied state :
-  const allNotes = notes.length;
-  const completedNotes = notes.filter((n) => n.completed).length;
-  const unCompletedNotes = allNotes - completedNotes;
+function filterNotes(notes, categoryFilter, search) {
+  let filtered = notes;
+  if (categoryFilter) {
+    if (categoryFilter === "__no_category__") {
+      filtered = filtered.filter((n) => !n.category || n.category === "");
+    } else {
+      filtered = filtered.filter((n) => (n.category || "") === categoryFilter);
+    }
+  }
+  const q = (search || "").trim().toLowerCase();
+  if (q) {
+    filtered = filtered.filter(
+      (n) =>
+        (n.title || "").toLowerCase().includes(q) ||
+        (n.description || "").toLowerCase().includes(q) ||
+        (n.category || "").toLowerCase().includes(q)
+    );
+  }
+  return filtered;
+}
 
-  if (!allNotes)
+function NoteStatus({ categoryFilter, search }) {
+  const notes = useNotes();
+  const filtered = filterNotes(notes, categoryFilter, search);
+
+  if (!notes.length)
     return (
       <Message>
-        ℹ️ <span>No Notes has already been added.</span> <span>🧐</span>
+        هنوز یادداشتی اضافه نشده.
       </Message>
     );
+
+  if (!filtered.length) return null;
+
+  const allNotes = filtered.length;
+  const completedNotes = filtered.filter((n) => n.completed).length;
+  const unCompletedNotes = allNotes - completedNotes;
 
   return (
     <ul className="note-status">
       <li>
-        All <span>{allNotes}</span>
+        همه <span>{allNotes}</span>
       </li>
       <li>
-        Completed <span>{completedNotes}</span>
+        انجام‌شده <span>{completedNotes}</span>
       </li>
       <li>
-        Open <span>{unCompletedNotes}</span>
+        باز <span>{unCompletedNotes}</span>
       </li>
     </ul>
   );

@@ -1,7 +1,5 @@
 function Message({ children }) {
-  return <div>{children}</div>;
+  return <div className="message-empty">{children}</div>;
 }
 
 export default Message;
-
-// children prop =>

@@ -1,48 +1,68 @@
 import { useState } from "react";
-import { useNotesDispatch } from "../context/NotesContext";
+import { useNotesDispatch, useCategories } from "../context/NotesContext";
 
-function AddNewNote() {
+function AddNewNote({ onAfterSubmit }) {
   const dispatch = useNotesDispatch();
-  const [title, setTtile] = useState("");
+  const categories = useCategories();
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!title || !description) return null;
+    if (!title.trim() || !description.trim()) return;
 
     const newNote = {
-      title,
-      description,
+      title: title.trim(),
+      description: description.trim(),
+      category: category || undefined,
       id: Date.now(),
       completed: false,
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     dispatch({ type: "add", payload: newNote });
-    setTtile("");
+    setTitle("");
     setDescription("");
+    setCategory("");
+    onAfterSubmit?.();
   };
 
   return (
     <div className="add-new-note">
-      <h2>Add New Note</h2>
+      <h2>افزودن یادداشت جدید</h2>
       <form className="note-form" onSubmit={handleSubmit}>
         <input
           value={title}
-          onChange={(e) => setTtile(e.target.value)}
+          onChange={(e) => setTitle(e.target.value)}
           type="text"
           className="text-field"
-          placeholder="Note title"
+          placeholder="عنوان یادداشت"
+          aria-label="عنوان"
         />
-        <input
+        <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          type="text"
           className="text-field"
-          placeholder="Note description"
+          placeholder="متن یادداشت"
+          rows={4}
+          aria-label="متن"
         />
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="select"
+          aria-label="دسته‌بندی"
+        >
+          <option value="">بدون دسته‌بندی</option>
+          {categories.map((name) => (
+            <option key={name} value={name}>
+              {name}
+            </option>
+          ))}
+        </select>
         <button type="submit" className="btn btn--primary">
-          Add New Note
+          افزودن یادداشت
         </button>
       </form>
     </div>
